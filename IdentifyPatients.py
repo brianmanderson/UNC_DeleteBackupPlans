@@ -88,14 +88,14 @@ def separate_by_min_date(days_since_last_edit: int, header_files: List[str]):
     return loading_headers
 
 
-def return_patients_with_plans_to_delete():
+def return_patients_with_plans_to_delete(day_since_edit: int):
     path = r'\\vscifs1\PhysicsQAdata\BMA\RayStationDataStructure\DataBases'
     database = "10ASP1"
     database_path = os.path.join(path, database)
     all_files = os.listdir(database_path)
     json_files = [os.path.join(database_path, i) for i in all_files if i.endswith(".json")]
     header_files = [i for i in json_files if i.endswith("_Header.json")]
-    header_files = separate_by_min_date(days_since_last_edit=90, header_files=header_files)
+    header_files = separate_by_min_date(days_since_last_edit=day_since_edit, header_files=header_files)
     patients = load_patient_headers(header_files)
     searching_string = ["backup", "notused", "notusing"]
     patients_with_plans_to_delete: List[PatientHeader]

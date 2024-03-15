@@ -25,14 +25,14 @@ sep = UncScriptInitObj.get_sep()
 
 
 # location of misc files
-misc = baseDir + sep + 'Make_Raystation_Data_Structure'
+misc = baseDir + sep + 'UNC_DeleteBackupPlans'
 sys.path.append(misc)
 
 
 #****************************
 # ***CHANGE THESE LINES***
 import DeleteBackup
-BuildDataBase.run()
+DeleteBackup.run()
 # import ExportFromRS
 # ExportFromRS.main()
 print('...just ran {} version {} ...'.format(current_script,last_edit))
