@@ -102,7 +102,4 @@ def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: i
 
 
 if __name__ == '__main__':
-    today = DateTimeClass()
-    today.from_python_datetime(datetime.now())
-    return_patients_with_plans_to_delete(today, 30)
     pass

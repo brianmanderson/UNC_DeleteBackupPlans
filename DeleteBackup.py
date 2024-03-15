@@ -9,7 +9,7 @@ def run():
     print("Running")
     today = DateTimeClass()
     today.from_python_datetime(datetime.now())
-    patients = return_patients_with_plans_to_delete(today, 90)
+    patients = return_patients_with_plans_to_delete(today, 60)
     print("Found " + str(len(patients)) + " Patients")
     patient_db = get_current("PatientDB")
     for patient in patients:
