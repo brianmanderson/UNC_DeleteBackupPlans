@@ -1,8 +1,7 @@
 import os
 from datetime import datetime
 from typing import List
-from InfoStructure.Base import PatientHeader, save_database, DateTimeClass, StrippedDownPlan, ReviewClass
-import pandas as pd
+from InfoStructure.Base import PatientHeader, DateTimeClass, StrippedDownPlan, ReviewClass
 
 
 def check_is_approved(tp: StrippedDownPlan):
@@ -52,6 +51,7 @@ def load_patient_headers(header_files: List[str]):
     patients = []
     for header_file in header_files:
         patient_header = PatientHeader.from_json_file(header_file)
+        print(patient_header.__dict__)
         patients.append(patient_header)
     return patients
 
@@ -69,11 +69,8 @@ def identify_plan_names(database_path):
     return plan_names
 
 
-def separate_by_min_date(days_since_last_edit: int, header_files: List[str]):
+def separate_by_min_date(start_date: DateTimeClass, days_since_last_edit: int, header_files: List[str]):
     loading_headers = []
-    today = datetime.today()
-    today_date_object = DateTimeClass()
-    today_date_object.from_python_datetime(today)
 
     for file in header_files:
         _, header_file = os.path.split(file)
@@ -83,19 +80,19 @@ def separate_by_min_date(days_since_last_edit: int, header_files: List[str]):
         date_object.year = int(year)
         date_object.month = int(month)
         date_object.day = int(day)
-        if (today_date_object - date_object).days > days_since_last_edit:
+        if (start_date - date_object).days > days_since_last_edit:
             loading_headers.append(file)
     return loading_headers
 
 
-def return_patients_with_plans_to_delete(day_since_edit: int):
+def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: int):
     path = r'\\vscifs1\PhysicsQAdata\BMA\RayStationDataStructure\DataBases'
     database = "10ASP1"
     database_path = os.path.join(path, database)
     all_files = os.listdir(database_path)
     json_files = [os.path.join(database_path, i) for i in all_files if i.endswith(".json")]
     header_files = [i for i in json_files if i.endswith("_Header.json")]
-    header_files = separate_by_min_date(days_since_last_edit=day_since_edit, header_files=header_files)
+    header_files = separate_by_min_date(start_date=today, days_since_last_edit=day_since_edit, header_files=header_files)
     patients = load_patient_headers(header_files)
     searching_string = ["backup", "notused", "notusing"]
     patients_with_plans_to_delete: List[PatientHeader]

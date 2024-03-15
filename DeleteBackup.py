@@ -1,10 +1,16 @@
 import os
+from datetime import datetime
+from InfoStructure.Base import DateTimeClass
 from IdentifyPatients import return_patients_with_plans_to_delete
 from connect import *
 
 
 def run():
-    patients = return_patients_with_plans_to_delete(30)
+    print("Running")
+    today = DateTimeClass()
+    today.from_python_datetime(datetime.now())
+    patients = return_patients_with_plans_to_delete(today, 30)
+    print("Found " + str(len(patients)) + " Patients")
     patient_db = get_current("PatientDB")
     for patient in patients:
         rs_info = patient_db.QueryPatientInfo(Filter={"Id": patient.RS_UID}, UseIndexService=False)
