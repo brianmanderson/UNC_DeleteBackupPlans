@@ -51,7 +51,6 @@ def load_patient_headers(header_files: List[str]):
     patients = []
     for header_file in header_files:
         patient_header = PatientHeader.from_json_file(header_file)
-        print(patient_header.__dict__)
         patients.append(patient_header)
     return patients
 
@@ -103,4 +102,7 @@ def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: i
 
 
 if __name__ == '__main__':
+    today = DateTimeClass()
+    today.from_python_datetime(datetime.now())
+    return_patients_with_plans_to_delete(today, 30)
     pass
