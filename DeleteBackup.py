@@ -38,7 +38,7 @@ def run():
                             break
                     if delete_tp:
                         print("Deleting " + treatment_plan.Name.lower())
-                        return
+                        continue
                         for beam_set in treatment_plan.BeamSets:
                             for beam in beam_set.Beams:
                                 beam_set.DeleteBeam(BeamName=beam.Name)
