@@ -26,7 +26,10 @@ def run():
     for patient in patients:
         rs_info = patient_db.QueryPatientInfo(Filter={"PatientID": patient.MRN}, UseIndexService=False)
         if len(rs_info) == 1:
-            rs_patient = patient_db.LoadPatient(PatientInfo=rs_info[0], AllowPatientUpgrade=False)
+            try:
+                rs_patient = patient_db.LoadPatient(PatientInfo=rs_info[0], AllowPatientUpgrade=False)
+            except:
+                continue
             for case in rs_patient.Cases:
                 for treatment_plan in case.TreatmentPlans:
                     if check_is_approved(treatment_plan):
