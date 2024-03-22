@@ -84,7 +84,9 @@ def separate_by_min_date(start_date: DateTimeClass, days_since_last_edit: int, h
     return loading_headers
 
 
-def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: int, verbose=False):
+def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: int, searching_string: List[str],
+                                         verbose=False):
+    # searching_string = ["backup", "notused", "notusing", "dnu"]
     if today is None:
         today = DateTimeClass()
         today.from_python_datetime(datetime.today())
@@ -96,7 +98,6 @@ def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: i
     header_files = [i for i in json_files if i.endswith("_Header.json")]
     header_files = separate_by_min_date(start_date=today, days_since_last_edit=day_since_edit, header_files=header_files)
     patients = load_patient_headers(header_files)
-    searching_string = ["backup", "notused", "notusing", "dnu"]
     patients_with_plans_to_delete: List[PatientHeader]
     patients_with_plans_to_delete = []
     for find_str in searching_string:
