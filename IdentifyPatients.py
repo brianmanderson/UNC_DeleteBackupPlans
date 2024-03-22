@@ -73,7 +73,7 @@ def separate_by_min_date(start_date: DateTimeClass, days_since_last_edit: int, h
 
     for file in header_files:
         _, header_file = os.path.split(file)
-        date = header_file.split('_')[1]
+        date = header_file.split('_')[-2]
         year, month, day, hour, minute = date.split('.')
         date_object = DateTimeClass()
         date_object.year = int(year)
@@ -84,7 +84,10 @@ def separate_by_min_date(start_date: DateTimeClass, days_since_last_edit: int, h
     return loading_headers
 
 
-def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: int):
+def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: int, verbose=False):
+    if today is None:
+        today = DateTimeClass()
+        today.from_python_datetime(datetime.today())
     path = r'\\vscifs1\PhysicsQAdata\BMA\RayStationDataStructure\DataBases'
     database = "10ASP1"
     database_path = os.path.join(path, database)
@@ -93,13 +96,21 @@ def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: i
     header_files = [i for i in json_files if i.endswith("_Header.json")]
     header_files = separate_by_min_date(start_date=today, days_since_last_edit=day_since_edit, header_files=header_files)
     patients = load_patient_headers(header_files)
-    searching_string = ["backup", "notused", "notusing"]
+    searching_string = ["backup", "notused", "notusing", "dnu"]
     patients_with_plans_to_delete: List[PatientHeader]
     patients_with_plans_to_delete = []
     for find_str in searching_string:
         patients_with_plans_to_delete += filter_patients_by_plan_startswith(patients, find_str)
+    if verbose:
+        for pat in patients_with_plans_to_delete:
+            for case in pat.Cases:
+                for tp in case.TreatmentPlans:
+                    for s in searching_string:
+                        if tp.PlanName.lower().find(s) != -1:
+                            print(pat.MRN + " " + tp.PlanName)
     return patients_with_plans_to_delete
 
 
 if __name__ == '__main__':
+    x = return_patients_with_plans_to_delete(None, 90, verbose=True)
     pass
