@@ -28,7 +28,6 @@ def run():
         if len(rs_info) == 1:
             rs_patient = patient_db.LoadPatient(PatientInfo=rs_info[0], AllowPatientUpgrade=False)
             for case in rs_patient.Cases:
-                case.SetCurrent()
                 for treatment_plan in case.TreatmentPlans:
                     if check_is_approved(treatment_plan):
                         continue
@@ -46,7 +45,6 @@ def run():
                             for beam_name in beams_to_delete:
                                 beam_set.DeleteBeam(BeamName=beam_name)
             rs_patient.Save()
-            return
 
 
 if __name__ == '__main__':
