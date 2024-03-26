@@ -84,14 +84,13 @@ def separate_by_min_date(start_date: DateTimeClass, days_since_last_edit: int, h
     return loading_headers
 
 
-def return_patients_with_plans_to_delete(today: DateTimeClass, day_since_edit: int, searching_string: List[str],
-                                         verbose=False):
+def return_patients_with_plans_to_delete(database: str, today: DateTimeClass, day_since_edit: int,
+                                         searching_string: List[str], verbose=False):
     # searching_string = ["backup", "notused", "notusing", "dnu"]
     if today is None:
         today = DateTimeClass()
         today.from_python_datetime(datetime.today())
     path = r'\\vscifs1\PhysicsQAdata\BMA\RayStationDataStructure\DataBases'
-    database = "10ASP1"
     database_path = os.path.join(path, database)
     all_files = os.listdir(database_path)
     json_files = [os.path.join(database_path, i) for i in all_files if i.endswith(".json")]
