@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from typing import List
 from InfoStructure.Base import PatientHeader, DateTimeClass, StrippedDownPlan, ReviewClass
+from InfoStructure.Base import update_local_database
 
 
 def check_is_approved(tp: StrippedDownPlan):
@@ -102,15 +103,19 @@ def return_patients_with_plans_to_delete(database: str, today: DateTimeClass, da
     for find_str in searching_string:
         patients_with_plans_to_delete += filter_patients_by_plan_startswith(patients, find_str)
     if verbose:
+        plans_to_delete = 0
         for pat in patients_with_plans_to_delete:
             for case in pat.Cases:
                 for tp in case.TreatmentPlans:
                     for s in searching_string:
                         if tp.PlanName.lower().find(s) != -1:
                             print(pat.MRN + " " + tp.PlanName)
+                            plans_to_delete += 1
+        print("Aiming to delete " + str(plans_to_delete) + " plans")
     return patients_with_plans_to_delete
 
 
 if __name__ == '__main__':
-    x = return_patients_with_plans_to_delete(None, 90, verbose=True)
+    # x = return_patients_with_plans_to_delete("2020", None, 90, verbose=True,
+    #                                          searching_string=["backup", "notused", "notusing", "dnu"])
     pass
