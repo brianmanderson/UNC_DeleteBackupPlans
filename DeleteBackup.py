@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import random
 from InfoStructure.Base import DateTimeClass
 from IdentifyPatients import return_patients_with_plans_to_delete
 from connect import *
@@ -25,6 +26,7 @@ def run():
     print("Found " + str(len(patients)) + " Patients")
     patient_db = get_current("PatientDB")
     plans_deleted = 0
+    random.shuffle(patients)
     for patient in patients:
         rs_info = patient_db.QueryPatientInfo(Filter={"PatientID": patient.MRN}, UseIndexService=False)
         if len(rs_info) == 1:

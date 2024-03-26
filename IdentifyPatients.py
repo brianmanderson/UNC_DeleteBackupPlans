@@ -92,6 +92,9 @@ def return_patients_with_plans_to_delete(database: str, today: DateTimeClass, da
         today = DateTimeClass()
         today.from_python_datetime(datetime.today())
     path = r'\\vscifs1\PhysicsQAdata\BMA\RayStationDataStructure\DataBases'
+    # path = r'C:\Users\Markb\Modular_Projects\Local_Databases'
+    # update_local_database(local_database_path=r'C:\Users\Markb\Modular_Projects\Local_Databases',
+    #                       network_database_path=path)
     database_path = os.path.join(path, database)
     all_files = os.listdir(database_path)
     json_files = [os.path.join(database_path, i) for i in all_files if i.endswith(".json")]
