@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import random
-from InfoStructure.Base import DateTimeClass
+from InfoStructure.Base import DateTimeClass, PatientClass
 from IdentifyPatients import return_patients_with_plans_to_delete
 from connect import *
 
@@ -27,6 +27,8 @@ def run():
     patient_db = get_current("PatientDB")
     plans_deleted = 0
     random.shuffle(patients)
+    path = r'\\vscifs1\PhysicsQAdata\BMA\RayStationDataStructure\DataBases'
+    db_path = os.path.join(path, database)
     for patient in patients:
         rs_info = patient_db.QueryPatientInfo(Filter={"PatientID": patient.MRN}, UseIndexService=False)
         if len(rs_info) == 1:
@@ -34,6 +36,8 @@ def run():
                 rs_patient = patient_db.LoadPatient(PatientInfo=rs_info[0], AllowPatientUpgrade=False)
             except:
                 continue
+            patient_class = PatientClass()
+            patient_class.build_from_info(rs_info[0])
             for case in rs_patient.Cases:
                 for treatment_plan in case.TreatmentPlans:
                     if check_is_approved(treatment_plan):
@@ -53,6 +57,12 @@ def run():
                             for beam_name in beams_to_delete:
                                 beam_set.DeleteBeam(BeamName=beam_name)
             rs_patient.Save()
+            pat_json = os.path.join(db_path, patient_class.return_out_file_name())
+            if os.path.exists(pat_json):
+                os.remove(pat_json)
+            header_json = pat_json.replace(".json", "_Header.json")
+            if os.path.exists(header_json):
+                os.remove(header_json)
     print("Deleted " + str(plans_deleted) + " plans in total")
 
 
