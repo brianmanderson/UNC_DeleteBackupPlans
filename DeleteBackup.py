@@ -20,7 +20,7 @@ def run():
     today = DateTimeClass()
     today.from_python_datetime(datetime.now())
     searching_string = ["backup", "notused", "notusing", "dnu"]
-    database = "2020"
+    database = "2021"
     patients = return_patients_with_plans_to_delete(database, today, day_since_edit=90, searching_string=searching_string,
                                                     verbose=True)
     print("Found " + str(len(patients)) + " Patients")
@@ -37,7 +37,10 @@ def run():
             except:
                 continue
             patient_class = PatientClass()
-            patient_class.build_from_info(rs_info[0])
+            patient_class.build_info(rs_patient)
+            pat_json = os.path.join(db_path, patient_class.return_out_file_name())
+            if not os.path.exists(pat_json):
+                continue
             for case in rs_patient.Cases:
                 for treatment_plan in case.TreatmentPlans:
                     if check_is_approved(treatment_plan):
@@ -57,7 +60,6 @@ def run():
                             for beam_name in beams_to_delete:
                                 beam_set.DeleteBeam(BeamName=beam_name)
             rs_patient.Save()
-            pat_json = os.path.join(db_path, patient_class.return_out_file_name())
             if os.path.exists(pat_json):
                 os.remove(pat_json)
             header_json = pat_json.replace(".json", "_Header.json")

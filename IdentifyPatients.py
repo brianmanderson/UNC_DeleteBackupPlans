@@ -51,8 +51,9 @@ def load_patient_headers(header_files: List[str]):
     patients: List[PatientHeader]
     patients = []
     for header_file in header_files:
-        patient_header = PatientHeader.from_json_file(header_file)
-        patients.append(patient_header)
+        if os.path.exists(header_file):
+            patient_header = PatientHeader.from_json_file(header_file)
+            patients.append(patient_header)
     return patients
 
 
